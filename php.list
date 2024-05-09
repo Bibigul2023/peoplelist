@@ -1,0 +1,15 @@
+$pdo = new PDO('mysql:host=localhost;dbname=your_database', 'username', 'password');
+$users = $pdo->query("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);
+echo json_encode($users);
+$id = $_POST['id'];
+$name = $_POST['name'];
+
+$pdo = new PDO('mysql:host=localhost;dbname=your_database', 'username', 'password');
+$statement = $pdo->prepare("UPDATE users SET name = :name WHERE id = :id");
+$statement->execute(array(':name' => $name, ':id' => $id));
+
+$id = $_POST['id'];
+
+$pdo = new PDO('mysql:host=localhost;dbname=your_database', 'username', 'password');
+$statement = $pdo->prepare("UPDATE users SET blocked = 1 WHERE id = :id");
+$statement->execute(array(':id' => $id));
