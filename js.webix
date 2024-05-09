@@ -1,0 +1,35 @@
+webix.ui({
+    view: "datatable",
+    id: "userTable",
+    editable: true,
+    editaction: "dblclick",
+    url: "data.php",
+    columns: [
+        { id: "id", header: "", width: 50 },
+        { id: "name", header: ["Name", { content: "textFilter" }], fillspace: true, editor: "text" },
+        { id: "actions", header: "", template: "<button class='webix_button webix_secondary' onclick='blockUser(#id#)'>Block</button>", width: 100 }
+    ],
+    on: {
+        onAfterEditStop: function(state, editor, ignoreUpdate) {
+            if (!ignoreUpdate) {
+                webix.ajax().post("update.php", state, function(text, data) {
+                    this.success();
+                });
+            }
+        }
+    }
+});
+
+function blockUser(id) {
+    webix.confirm({
+        title: "Block User",
+        text: "Are you sure you want to block this user?",
+        callback: function(result) {
+            if (result) {
+                webix.ajax().post("block.php", { id: id }, function(text, data) {
+                    $$("userTable").load("data.php");
+                });
+            }
+        }
+    });
+}
